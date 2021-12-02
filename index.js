@@ -2,13 +2,15 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const TaskRouter = require("./routes/Task");
+const userRouter = require("./routes/User");
 
 const app = express();
-require("dotenv").config();
+require("dotenv").config({debug:process.env.DEBUG});
 app.use(express.json());
 app.use(cors());
 
 app.use("/api/v1", TaskRouter);
+app.use("/api/v1", userRouter);
 
 app.get("/", (req, res) => res.send("here"));
 
