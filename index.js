@@ -1,13 +1,21 @@
 const express = require("express");
+const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const TaskRouter = require("./routes/Task");
 const userRouter = require("./routes/User");
 
 const app = express();
-require("dotenv").config({debug:process.env.DEBUG});
+require("dotenv").config({ debug: process.env.DEBUG });
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    credentials: true,
+    origin: "http://localhost:3000",
+ 
+  })
+);
+app.use(cookieParser());
 
 app.use("/api/v1", TaskRouter);
 app.use("/api/v1", userRouter);
