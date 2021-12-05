@@ -7,12 +7,10 @@ const userModel = mongoose.Schema({
   firstName: {
     type: String,
     required: [true, "enter firstname"],
-    
   },
   lastName: {
     type: String,
     required: [true, "enter last name"],
-   
   },
   email: {
     type: String,
@@ -24,11 +22,11 @@ const userModel = mongoose.Schema({
 
   // photo: String,
 
-  //  role: {
-  //  type: String,
-  //  enum: ['user',  'admin'],
-  //  default: 'user'
-  // },
+  role: {
+    type: String,
+    enum: ["user", "admin"],
+    default: "user",
+  },
 
   active: {
     type: Boolean,
@@ -38,12 +36,12 @@ const userModel = mongoose.Schema({
   password: {
     type: String,
     required: [true, "password is required"],
-   
+
     select: false,
   },
   passwordConfirm: {
     type: String,
-    
+
     validate: {
       // This only works on CREATE and SAVE!!!
       validator: function (el) {
@@ -52,7 +50,7 @@ const userModel = mongoose.Schema({
       message: "Passwords are not the same!",
     },
   },
-
+  Token: { type: String },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -80,5 +78,19 @@ userModel.methods.correctPassword = async function (
 
   return x;
 };
+//creaeting token
+// userModel.pre("save", async function () {
+//   const resetToken = crypto.randomBytes(32).toString("hex");
+
+//   this.Token = crypto.createHash("sha256").update(resetToken).digest("hex");
+// });
+
+// userModel.methods.createVerifyAccountToken = async function () {
+//   const resetToken = crypto.randomBytes(32).toString("hex");
+
+//   this.Token = crypto.createHash("sha256").update(resetToken).digest("hex");
+
+//   return resetToken;
+// };
 const users = mongoose.model("users", userModel);
 module.exports = users;

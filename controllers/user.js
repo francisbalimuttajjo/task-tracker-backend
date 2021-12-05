@@ -1,6 +1,7 @@
 const path = require("path");
 const User = require("../model/User");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 const catchAsync = require("../utils/catchAsync");
 const appError = require("../utils/appError");
 const Email = require("../utils/Email");
@@ -9,7 +10,10 @@ const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
-
+const createToken = (token) => {
+  const Token = crypto.createHash("sha256").update(token).digest("hex");
+  return Token;
+};
 // const sendResponse = (data) => {
 //   return (req, res,next) =>
 //     res.status(200).json({
@@ -31,26 +35,45 @@ exports.register = catchAsync(async (req, res, next) => {
   const { firstName, lastName, email, password, passwordConfirm } = req.body;
   let user = await User.findOne({ email });
   if (user) return next(new appError("account exists,please login", 401));
-
-  const registeredUser = await User.create({
+  const activationToken = crypto.randomBytes(32).toString("hex");
+  const Token = createToken(activationToken);
+  const newUser = new User({
     firstName,
     lastName,
     email,
     password,
     passwordConfirm,
+    Token,
   });
 
-  const url = `${req.protocol}://${req.get("host")}/me`;
+  await newUser.save();
+
+  const url = `${req.protocol}://${req.get(
+    "host"
+  )}/api/v1/users/activate-account/${activationToken}`;
   console.log(url);
-  console.log(registeredUser);
-  await new Email(registeredUser, url).sendWelcome();
+
+  await new Email(newUser, url).sendWelcome();
   // sendResponse(registeredUser);
   res.status(200).json({
     status: "success",
-    data: registeredUser,
+    data: newUser,
   });
 });
+exports.confirmAccount = catchAsync(async (req, res, next) => {
+  const Token = createToken(req.params.token);
+  const user = await User.findOne({ Token });
 
+  if (!user) return next(new appError("invalid token", 401));
+  user.Token = undefined;
+  user.active = true;
+  await user.save();
+  //response
+  res.status(200).json({
+    status: "success",
+    data: "account activated",
+  });
+});
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password)
