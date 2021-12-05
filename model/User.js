@@ -7,10 +7,12 @@ const userModel = mongoose.Schema({
   firstName: {
     type: String,
     required: [true, "enter firstname"],
+    
   },
   lastName: {
     type: String,
     required: [true, "enter last name"],
+   
   },
   email: {
     type: String,
@@ -36,11 +38,12 @@ const userModel = mongoose.Schema({
   password: {
     type: String,
     required: [true, "password is required"],
+   
     select: false,
   },
   passwordConfirm: {
     type: String,
-    // required:[true,'please confirm your password'],
+    
     validate: {
       // This only works on CREATE and SAVE!!!
       validator: function (el) {

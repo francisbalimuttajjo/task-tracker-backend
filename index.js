@@ -1,31 +1,13 @@
-const express = require("express");
-const cookieParser = require("cookie-parser");
-const mongoose = require("mongoose");
-const cors = require("cors");
-const TaskRouter = require("./routes/Task");
-const userRouter = require("./routes/User");
-
-const app = express();
+const app = require('./app')
+const mongoose = require('mongoose')
 require("dotenv").config({ debug: process.env.DEBUG });
-app.use(express.json());
-app.use(
-  cors({
-    credentials: true,
-    origin: "http://localhost:3000",
- 
-  })
-);
-app.use(cookieParser());
 
-app.use("/api/v1", TaskRouter);
-app.use("/api/v1", userRouter);
 
-app.get("/", (req, res) => res.send("here"));
 
-// mongodb+srv://franckie:<password>@i-reporter.ouszx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
-// mongoose.connect('
-// mongodb+srv://franckie:<password>@i-reporter.ouszx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority' , {useNewUrlParser: true, useUnifiedTopology: true })
-mongoose.connect("mongodb://localhost:27017/task-tracker", {
+console.log(app.get('env'));
+
+
+mongoose.connect(process.env.DB_LOCAL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -46,4 +28,4 @@ db.once("open", () => {
 //   // perform actions on the collection object
 //   client.close();
 // });
-app.listen("5000", () => console.log("listening on port 5000"));
+app.listen("4000", () => console.log("listening on port 5000"));
