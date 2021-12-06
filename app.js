@@ -28,7 +28,7 @@ if (process.env.NODE_ENV === "development") {
 
 app.use("/api/v1", TaskRouter);
 app.use("/api/v1", userRouter);
-app.get('/',(req, res)=>res.render('welcome.pug'))
+app.get('/',(req, res)=>res.render('passwordReset.pug'))
 
 app.all("*", (req, res, next) => {
     // res.send('route not found')

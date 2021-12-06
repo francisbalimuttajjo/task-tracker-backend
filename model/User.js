@@ -55,6 +55,8 @@ const userModel = mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  expiresIn: { type: Date },
+  passwordChangedAt: { type: Date },
 });
 
 userModel.pre("save", async function (next) {
@@ -76,14 +78,8 @@ userModel.methods.correctPassword = async function (
 ) {
   return await bcrypt.compare(candidatePassword, userPassword);
 
-  return x;
+  // return x;
 };
-//creaeting token
-// userModel.pre("save", async function () {
-//   const resetToken = crypto.randomBytes(32).toString("hex");
-
-//   this.Token = crypto.createHash("sha256").update(resetToken).digest("hex");
-// });
 
 // userModel.methods.createVerifyAccountToken = async function () {
 //   const resetToken = crypto.randomBytes(32).toString("hex");
