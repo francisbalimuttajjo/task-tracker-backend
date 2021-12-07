@@ -1,26 +1,8 @@
 const User = require("../model/User");
-// const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 const catchAsync = require("../utils/catchAsync");
 const appError = require("../utils/appError");
 const { signToken, cookieOptions, sendResponse } = require("../utils/fns");
-
-// const signToken = (id) =>
-//   jwt.sign({ id }, process.env.JWT_SECRET, {
-//     expiresIn: process.env.JWT_EXPIRES_IN,
-//   });
-// const cookieOptions = {
-//   secure: process.env.NODE_ENV !== "development",
-
-//   httpOnly: true,
-//   expires: new Date(
-//     Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 1000
-//   ),
-// };
-// const sendResponse = (data, statusCode, req, res) =>
-//   res.status(statusCode).json({
-//     status: "success",
-//     data,
-//   });
 
 exports.isActive = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
@@ -45,9 +27,50 @@ exports.isActive = catchAsync(async (req, res, next) => {
 exports.login = catchAsync(async (req, res, next) => {
   //getting user from request body
   const user = req.user;
-  const value = signToken(user._id);
-  const token = `Bearer ${value}`;
-  res.cookie(`authToken`, token, cookieOptions);
-  const data = { message: "login successfull", user: user.firstName, token };
+  const token = signToken(user._id);
+
+  // const token = `Bearer ${value}`;
+  res.cookie(
+    `auth`,
+    token,
+
+    cookieOptions
+  );
+  const data = { message: "login successfull", user, token };
   sendResponse(data, 200, req, res);
+});
+exports.logOutHandler = catchAsync(async (req, res, next) => {
+  res.cookie("auth", "ooops loggedOut", { expiresIn: 2000 });
+  sendResponse("logged out successfully", 200, req, res);
+});
+exports.isAuthenticated = catchAsync(async (req, res, next) => {
+  let token;
+  console.log(req.headers);
+  //checking if token exists on the response headers
+  if (req.headers.cookie && req.headers.cookie.startsWith("auth")) {
+    token = req.headers.cookie.split("=")[1];
+    // console.log('token',token);
+  } else if (!req.headers.cookie || !req.headers.cookie.startsWith("auth")) {
+    return next(
+      new appError("You are not logged in! Please log in to get access.", 401)
+    );
+  }
+
+  //verifying if the right token
+  const verify = jwt.verify(token, process.env.JWT_SECRET);
+  const user = await User.findById(verify.id);
+  // console.log(user);
+
+  //getting the user for that token
+  if (!user) return next(new appError("user doesnt exist", 400));
+  if (user.changedPasswordAfter(verify.iat)) {
+    return next(
+      new appError("User recently changed password! Please log in again.", 401)
+    );
+  }
+
+  //sending response
+  sendResponse(user, 200, req, res);
+
+  // console.log(verify);
 });

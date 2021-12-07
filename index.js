@@ -1,11 +1,8 @@
-const app = require('./app')
-const mongoose = require('mongoose')
+const app = require("./app");
+const mongoose = require("mongoose");
 require("dotenv").config({ debug: process.env.DEBUG });
 
-
-
-console.log(app.get('env'));
-
+console.log(app.get("env"));
 
 mongoose.connect(process.env.DB_LOCAL, {
   useNewUrlParser: true,
@@ -28,4 +25,4 @@ db.once("open", () => {
 //   // perform actions on the collection object
 //   client.close();
 // });
-app.listen("4000", () => console.log("listening on port 5000"));
+app.listen("5000", () => console.log("listening on port 5000"));

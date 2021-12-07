@@ -88,13 +88,18 @@ exports.register = catchAsync(async (req, res, next) => {
   });
 
   await newUser.save();
+  try {
+    const url = `${req.protocol}://${req.get(
+      "host"
+    )}/api/v1/users/activate-account/${activationToken}`;
+    // console.log(url);
 
-  const url = `${req.protocol}://${req.get(
-    "host"
-  )}/api/v1/users/activate-account/${activationToken}`;
-  // console.log(url);
+    // await new Email(newUser, url).sendWelcome();
+  } catch (err) {
+    await User.findOneAndDelete({ email });
+    return next(new appError("oops,something is not right,try again", 400));
+  }
 
-  await new Email(newUser, url).sendWelcome();
   sendResponse(newUser, 200, req, res);
 });
 exports.confirmAccount = catchAsync(async (req, res, next) => {
