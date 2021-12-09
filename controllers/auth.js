@@ -38,14 +38,17 @@ exports.login = catchAsync(async (req, res, next) => {
   );
   const data = { message: "login successfull", user, token };
   sendResponse(data, 200, req, res);
+  req.user = user;
+  next();
 });
 exports.logOutHandler = catchAsync(async (req, res, next) => {
+  // console.log('cooke',req.headers.cookie)
   res.cookie("auth", "ooops loggedOut", { expiresIn: 2000 });
   sendResponse("logged out successfully", 200, req, res);
 });
 exports.isAuthenticated = catchAsync(async (req, res, next) => {
   let token;
-  console.log(req.headers);
+  //  console.log(req.headers.cookie);
   //checking if token exists on the response headers
   if (req.headers.cookie && req.headers.cookie.startsWith("auth")) {
     token = req.headers.cookie.split("=")[1];
@@ -68,9 +71,11 @@ exports.isAuthenticated = catchAsync(async (req, res, next) => {
       new appError("User recently changed password! Please log in again.", 401)
     );
   }
-
+  req.user = user;
   //sending response
   sendResponse(user, 200, req, res);
 
   // console.log(verify);
+
+  next();
 });

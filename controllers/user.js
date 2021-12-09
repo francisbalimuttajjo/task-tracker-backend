@@ -1,15 +1,65 @@
 // const path = require("path");
 const User = require("../model/User");
 const crypto = require("crypto");
+const multer = require("multer");
+const sharp = require("sharp");
 const catchAsync = require("../utils/catchAsync");
 const appError = require("../utils/appError");
 const Email = require("../utils/Email");
-const { createToken, sendResponse } = require("../utils/fns");
+const { createToken,signToken, cookieOptions, sendResponse } = require("../utils/fns");
 
+// //uploading profile picture or photo
+const multerStorage = multer.memoryStorage();
+//filtering out no images
+const multerFilter = (req, file, cb) => {
+  console.log("fie", file);
+  if (file.mimetype.startsWith("image")) {
+    cb(null, true);
+  } else {
+    cb(new appError("Not an image! Please upload only images.", 400), false);
+  }
+};
+
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
+// //uploading image
+exports.uploadPhoto = upload.single("photo");
+
+//resizing photo
+exports.resizePhoto = catchAsync(async (req, res, next) => {
+  if (!req.file) return next();
+  console.log("file", req.file);
+  req.file.filename = `user-${req.user._id}-${Date.now()}.jpeg`;
+
+  await sharp(req.file.buffer)
+    .resize(500, 500)
+    .toFormat("jpeg")
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/users/${req.file.filename}`);
+
+  next();
+});
+
+//profile photo ends
+exports.update = catchAsync(async (req, res, next) => {
+  console.log("req.user", req.user);
+  console.log("req.file", req.file);
+
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    { photo: req.file.filename },
+    { new: true, runValidators: true }
+  );
+});
 exports.resetPassword = catchAsync(async (req, res, next) => {
   const { password, passwordConfirm } = req.body;
+  //extracting params
+  // if (!req.params.token) req.params.token = paramsBody;
+  console.log(req.params.token);
   const Token = createToken(req.params.token);
-  console.log("token", Token);
+  // console.log("token", Token);
   const user = await User.findOne({
     Token,
     expiresIn: { $gt: Date.now() },
@@ -25,7 +75,14 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     (user.password = password),
     (user.passwordConfirm = passwordConfirm),
     await user.save();
+    const token = signToken(user._id);
 
+  // const token = `Bearer ${value}`;
+  res.cookie(
+    `auth`,
+    token,
+    cookieOptions
+  );
   sendResponse("passwordChanged", 200, req, res);
 });
 
@@ -50,8 +107,8 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     )}/api/v1/users/passwordReset/${activationToken}`;
 
     //to be implemented
-    await new Email(user, url).sendPasswordReset();
-    // console.log(url);
+    // await new Email(user, url).sendPasswordReset();
+    console.log(url);
     sendResponse("activation link sent to ur email", 200, req, res);
   } catch (err) {
     user.Token = undefined;

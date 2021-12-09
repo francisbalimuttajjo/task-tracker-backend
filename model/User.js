@@ -20,7 +20,7 @@ const userModel = mongoose.Schema({
     validate: [validator.isEmail, "Please provide a valid email"],
   },
 
-  // photo: String,
+  photo: String,
 
   role: {
     type: String,
