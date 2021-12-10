@@ -1,7 +1,7 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
-const morgan = require("morgan")
+const morgan = require("morgan");
 const cors = require("cors");
 const path = require("path");
 const TaskRouter = require("./routes/Task");
@@ -21,23 +21,23 @@ app.use(
 app.use(cookieParser());
 
 app.set("views", path.join(__dirname, "views"));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 // Development logging
 if (process.env.NODE_ENV === "development") {
-    app.use(morgan("dev"));
-  }
+  app.use(morgan("dev"));
+}
 
 app.use("/api/v1", TaskRouter);
 app.use("/api/v1", userRouter);
-app.get('/',(req, res)=>res.render('passwordReset.pug'))
+app.get("/", (req, res) => res.render("passwordReset.pug"));
 
 app.all("*", (req, res, next) => {
-    // res.send('route not found')
-    return next(
-      new AppError(`${req.originalUrl} is not available on the server`, 404)
-    );
-  });
-  
-  app.use(globalErrorHandler);
+  // res.send('route not found')
+  return next(
+    new AppError(`${req.originalUrl} is not available on the server`, 404)
+  );
+});
+
+app.use(globalErrorHandler);
 
 module.exports = app;
