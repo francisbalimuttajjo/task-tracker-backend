@@ -6,7 +6,12 @@ const sharp = require("sharp");
 const catchAsync = require("../utils/catchAsync");
 const appError = require("../utils/appError");
 const Email = require("../utils/Email");
-const { createToken,signToken, cookieOptions, sendResponse } = require("../utils/fns");
+const {
+  createToken,
+  signToken,
+  cookieOptions,
+  sendResponse,
+} = require("../utils/fns");
 
 // //uploading profile picture or photo
 const multerStorage = multer.memoryStorage();
@@ -32,6 +37,7 @@ exports.resizePhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
   console.log("file", req.file);
   req.file.filename = `user-${req.user._id}-${Date.now()}.jpeg`;
+  //req.file.filename = `user-francis-${Date.now()}.jpeg`;
 
   await sharp(req.file.buffer)
     .resize(500, 500)
@@ -52,19 +58,19 @@ exports.update = catchAsync(async (req, res, next) => {
     { photo: req.file.filename },
     { new: true, runValidators: true }
   );
+  console.log(user)
+  sendResponse({ photo: req.file.filename }, 200, req, res);
 });
 exports.resetPassword = catchAsync(async (req, res, next) => {
   const { password, passwordConfirm } = req.body;
-  //extracting params
-  // if (!req.params.token) req.params.token = paramsBody;
-  console.log(req.params.token);
+
   const Token = createToken(req.params.token);
-  // console.log("token", Token);
+
   const user = await User.findOne({
     Token,
     expiresIn: { $gt: Date.now() },
   }).select("+password");
-  // console.log(user);
+
   if (!user) return next(new appError("token doesnt exist or is expired", 400));
   if (!password || !passwordConfirm)
     return next(new appError("please provide passwords", 400));
@@ -75,25 +81,18 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     (user.password = password),
     (user.passwordConfirm = passwordConfirm),
     await user.save();
-    const token = signToken(user._id);
+  const token = signToken(user._id);
 
-  // const token = `Bearer ${value}`;
-  res.cookie(
-    `auth`,
-    token,
-    cookieOptions
-  );
+  res.cookie(`auth`, token, cookieOptions);
   sendResponse("passwordChanged", 200, req, res);
 });
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   if (!req.body.email)
     return next(new appError("please provide an email", 400));
-  //////
+
   const activationToken = crypto.randomBytes(32).toString("hex");
   const Token = createToken(activationToken);
-
-  //////
   const user = await User.findOneAndUpdate(
     { email: req.body.email },
     { Token, expiresIn: new Date(Date.now() + 10 * 60 * 1000) }
@@ -106,7 +105,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
       "host"
     )}/api/v1/users/passwordReset/${activationToken}`;
 
-    //to be implemented
+    ///sending the emails
     // await new Email(user, url).sendPasswordReset();
     console.log(url);
     sendResponse("activation link sent to ur email", 200, req, res);
