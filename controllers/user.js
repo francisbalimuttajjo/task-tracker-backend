@@ -50,15 +50,14 @@ exports.resizePhoto = catchAsync(async (req, res, next) => {
 
 //profile photo ends
 exports.update = catchAsync(async (req, res, next) => {
-  console.log("req.user", req.user);
-  console.log("req.file", req.file);
+ 
 
   const user = await User.findByIdAndUpdate(
     req.user._id,
     { photo: req.file.filename },
     { new: true, runValidators: true }
   );
-  console.log(user)
+  
   sendResponse({ photo: req.file.filename }, 200, req, res);
 });
 exports.resetPassword = catchAsync(async (req, res, next) => {
