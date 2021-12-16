@@ -7,6 +7,11 @@ router.route("/myTasks").get(auth.isAllowed, taskController.getMyTasks);
 router
   .route("/tasks")
   .post(auth.isAllowed, taskController.createTask)
-  .get(auth.isAllowed, taskController.getTasks);
+  .get(auth.isAllowed, taskController.getTasks)
+  
+
+  router
+  .route("/tasks/:id")
+  .delete(auth.isAllowed, taskController.deleteTask);
 
 module.exports = router;

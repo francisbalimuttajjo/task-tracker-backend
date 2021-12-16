@@ -2,16 +2,24 @@ const Task = require("../model/Task");
 const { sendResponse } = require("../utils/fns");
 const catchAsync = require("../utils/catchAsync");
 const appError = require("../utils/appError");
+
+//deleting task from collection
+exports.deleteTask = catchAsync(async (req, res, next) => {
+  const task = await Task.findByIdAndRemove(req.params.id);
+  if (!task) return next(new appError("project,not available", 401));
+  sendResponse({id:task._id}, 200, req, res);
+});
+
 //creating task
 exports.createTask = catchAsync(async (req, res, next) => {
   const { title, category, priority, steps, description, comments } = req.body;
   //checking to see if task with similar title for that particular user is available
-  const tasks = await Task.find({ user: req.user._id });
-  // console.log("tasks", tasks);
-  const check = tasks.map((task) => task.title).includes(title);
-  console.log("check", check);
-  if (check)
+  const taskCheck = await Task.findOne({ user: req.user._id, title });
+  // console.log(taskCheck);
+
+  if (taskCheck)
     return next(new appError("project with title already exists", 400));
+  //creating task
   const task = await Task.create({
     title,
     category,
