@@ -7,9 +7,9 @@ const taskModel = mongoose.Schema({
   priority: { type: String, enum: ["high", "medium", "low"], required: true },
   steps: [mongoose.Schema.Types.Mixed],
   comments: [Object],
-  createdBy: {
-    type: String,
-    default: "bamayanja@gmail.com",
+  user: {
+    type: mongoose.Schema.ObjectId,
+   
   },
   createdAt: {
     type: Date,

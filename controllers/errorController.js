@@ -68,7 +68,7 @@ module.exports = (err, req, res, next) => {
     developmentError(err, res);
   } else if (process.env.NODE_ENV === "production") {
     let error = err;
-    console.log("production error", error);
+    // console.log("production error", error);
     if (error.name === "CastError") error = sendCastError(error);
     if (error.code === 11000) error = handleDuplicates(error);
     if (error.name === "ValidationError") error = validationError(error);
