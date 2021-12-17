@@ -3,11 +3,20 @@ const { sendResponse } = require("../utils/fns");
 const catchAsync = require("../utils/catchAsync");
 const appError = require("../utils/appError");
 
+//updating task
+exports.updateTask = catchAsync(async (req, res, next) => {
+  const { comments, steps } = req.body;
+  // console.log(req.body);
+  const task = await Task.findByIdAndUpdate(req.params.id, { comments, steps });
+  if (!task) return next(new appError("project,not available", 401));
+  sendResponse("updating", 200, req, res);
+});
+
 //deleting task from collection
 exports.deleteTask = catchAsync(async (req, res, next) => {
   const task = await Task.findByIdAndRemove(req.params.id);
   if (!task) return next(new appError("project,not available", 401));
-  sendResponse({id:task._id}, 200, req, res);
+  sendResponse({ id: task._id }, 200, req, res);
 });
 
 //creating task

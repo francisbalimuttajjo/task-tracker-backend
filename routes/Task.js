@@ -12,6 +12,7 @@ router
 
   router
   .route("/tasks/:id")
-  .delete(auth.isAllowed, taskController.deleteTask);
+  .delete(auth.isAllowed, taskController.deleteTask)
+  .patch(auth.isAllowed, taskController.updateTask);
 
 module.exports = router;
