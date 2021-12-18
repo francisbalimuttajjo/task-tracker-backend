@@ -17,7 +17,7 @@ const {
 const multerStorage = multer.memoryStorage();
 //filtering out no images
 const multerFilter = (req, file, cb) => {
-  console.log("fie", file);
+  // console.log("fie", file);
   if (file.mimetype.startsWith("image")) {
     cb(null, true);
   } else {
@@ -35,7 +35,7 @@ exports.uploadPhoto = upload.single("photo");
 //resizing photo
 exports.resizePhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
-  console.log("file", req.file);
+  // console.log("file", req.file);
   req.file.filename = `user-${req.user._id}-${Date.now()}.jpeg`;
   //req.file.filename = `user-francis-${Date.now()}.jpeg`;
 
@@ -50,14 +50,12 @@ exports.resizePhoto = catchAsync(async (req, res, next) => {
 
 //profile photo ends
 exports.update = catchAsync(async (req, res, next) => {
- 
-
   const user = await User.findByIdAndUpdate(
     req.user._id,
     { photo: req.file.filename },
     { new: true, runValidators: true }
   );
-  
+
   sendResponse({ photo: req.file.filename }, 200, req, res);
 });
 exports.resetPassword = catchAsync(async (req, res, next) => {
@@ -105,8 +103,8 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     )}/api/v1/users/passwordReset/${activationToken}`;
 
     ///sending the emails
-    // await new Email(user, url).sendPasswordReset();
-    console.log(url);
+    await new Email(user, url).sendPasswordReset();
+    // console.log(url);
     sendResponse("activation link sent to ur email", 200, req, res);
   } catch (err) {
     user.Token = undefined;
@@ -137,6 +135,7 @@ exports.register = catchAsync(async (req, res, next) => {
     firstName: firstName.split(" ").join(""),
     lastName: lastName.split(" ").join(""),
     email,
+    photo: "default.jpg",
     password: password.split(" ").join(""),
     passwordConfirm: passwordConfirm.split(" ").join(""),
     Token,
@@ -144,12 +143,15 @@ exports.register = catchAsync(async (req, res, next) => {
 
   await newUser.save();
   try {
-    const url = `${req.protocol}://${req.get(
-      "host"
-    )}/api/v1/users/activate-account/${activationToken}`;
+    const url =
+      //  `http://localhost:3000/api/v1/users/activate-account/${activationToken}`
+
+      `${req.protocol}://${req.get(
+        "host"
+      )}/api/v1/users/activate-account/${activationToken}`;
     // console.log(url);
 
-    // await new Email(newUser, url).sendWelcome();
+    await new Email(newUser, url).sendWelcome();
   } catch (err) {
     await User.findOneAndDelete({ email });
     return next(new appError("oops,something is not right,try again", 400));
@@ -165,6 +167,9 @@ exports.confirmAccount = catchAsync(async (req, res, next) => {
   user.Token = undefined;
   user.active = true;
   await user.save();
-  //response
+  const token = signToken(user._id);
+  //sigining in the user
+  res.cookie(`auth`, token, cookieOptions);
+  //sending response to the client //
   sendResponse("account activated", 200, req, res);
 });
