@@ -6,11 +6,12 @@ console.log(app.get("env"));
 
 mongoose.connect(
   // process.env.URL
-  process.env.DB_LOCAL
-  , {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+  process.env.DB_LOCAL,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+);
 const db = mongoose.connection;
 db.on("error", (err) => {
   console.error(err);
@@ -19,6 +20,6 @@ db.once("open", () => {
   console.log("DB started successfully connected");
 });
 
+const PORT = process.env.PORT;
 
-
-app.listen(5000, () => console.log("listening on port 5000"));
+app.listen(PORT, () => console.log(`listening on  port ${PORT}  `));

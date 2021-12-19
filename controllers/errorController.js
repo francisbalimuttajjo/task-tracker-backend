@@ -50,9 +50,7 @@ const productionError = (err, res) => {
       message: err.message,
     });
   } else {
-    //unseen error
-    // console.log(err)
-    // console.log(err.name)
+    
     return res.status(500).json({
       status: "error",
       message: "sorry,try again later",

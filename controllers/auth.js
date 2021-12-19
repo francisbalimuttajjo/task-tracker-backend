@@ -45,7 +45,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
       const verify = await user.correctPassword(currentPassword, user.password);
   // console.log(verify);
   if (!verify)
-    return next(new appError("please,provide valid password ", 400));
+    return next(new appError("please,provide a valid password ", 400));
     (user.passwordChangedAt = Date.now()),
     (user.password = password),
     (user.passwordConfirm = passwordConfirm),
@@ -59,6 +59,7 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new appError("please fill all fields", 400));
 
   const user = await User.findOne({ email }).select("+password");
+ 
   if (!user) return next(new appError("user doesnt exist,please signUp", 400));
 
   // console.log(user);
@@ -68,8 +69,7 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new appError("please,provide valid credentials ", 400));
 
   if (!user.active) return next(new appError("account not active", 400));
-  //getting user from request body
-  // const user = req.user;
+  
   const token = signToken(user._id);
 
   res.cookie(
@@ -78,9 +78,18 @@ exports.login = catchAsync(async (req, res, next) => {
 
     cookieOptions
   );
-  const data = { message: "login successfull", user, token };
+  const data = { message: "login successfull", user:{
+    firstName:user.firstName,lastName:user.lastName,email:user.email,photo:user.photo
+  }, token };
+
+  //sending response
   sendResponse(data, 200, req, res);
 });
+
+
+
+
+
 exports.logOutHandler = catchAsync(async (req, res, next) => {
   // console.log('cooke',req.headers.cookie)
   res.cookie("auth", "ooops loggedOut", { expiresIn: 2000 });
@@ -88,7 +97,7 @@ exports.logOutHandler = catchAsync(async (req, res, next) => {
 });
 exports.isAuthenticated = catchAsync(async (req, res, next) => {
   let token;
-  //  console.log(req.headers.cookie); bnn
+  
   //checking if token exists on the response headers
   if (req.headers.cookie && req.headers.cookie.startsWith("auth")) {
     token = req.headers.cookie.split("=")[1];
@@ -112,7 +121,7 @@ exports.isAuthenticated = catchAsync(async (req, res, next) => {
     );
   }
   if (!user.active) return next(new appError("account deleted", 401));
-  req.user = user;
-  //sending response
+  
   sendResponse(user, 200, req, res);
 });
+  

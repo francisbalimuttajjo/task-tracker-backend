@@ -35,9 +35,9 @@ exports.uploadPhoto = upload.single("photo");
 //resizing photo
 exports.resizePhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
-  // console.log("file", req.file);
+
   req.file.filename = `user-${req.user._id}-${Date.now()}.jpeg`;
-  //req.file.filename = `user-francis-${Date.now()}.jpeg`;
+ 
 
   await sharp(req.file.buffer)
     .resize(500, 500)
@@ -103,8 +103,8 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     )}/api/v1/users/passwordReset/${activationToken}`;
 
     ///sending the emails
-    await new Email(user, url).sendPasswordReset();
-    // console.log(url);
+    // await new Email(user, url).sendPasswordReset();
+     console.log(url);
     sendResponse("activation link sent to ur email", 200, req, res);
   } catch (err) {
     user.Token = undefined;
@@ -149,15 +149,16 @@ exports.register = catchAsync(async (req, res, next) => {
       `${req.protocol}://${req.get(
         "host"
       )}/api/v1/users/activate-account/${activationToken}`;
-    // console.log(url);
+     console.log(url);
 
-    await new Email(newUser, url).sendWelcome();
+    // await new Email(newUser, url).sendWelcome();
   } catch (err) {
     await User.findOneAndDelete({ email });
     return next(new appError("oops,something is not right,try again", 400));
   }
 
-  sendResponse(newUser, 200, req, res);
+  sendResponse('Account created', 200, req, res);
+  // sendResponse(newUser, 200, req, res);
 });
 exports.confirmAccount = catchAsync(async (req, res, next) => {
   const Token = createToken(req.params.token);
@@ -173,3 +174,4 @@ exports.confirmAccount = catchAsync(async (req, res, next) => {
   //sending response to the client //
   sendResponse("account activated", 200, req, res);
 });
+// http://localhost:3000/api/v1/users/activate-account/20034a87afec1a071a92f795353ed6ab5ef5999a7af11b9b7330d1135fa169bd
