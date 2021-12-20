@@ -21,6 +21,7 @@ exports.deleteTask = catchAsync(async (req, res, next) => {
 
 //creating task
 exports.createTask = catchAsync(async (req, res, next) => {
+  // console.log(req.body)
   const { title, category, priority, steps, description, comments } = req.body;
   //checking to see if task with similar title for that particular user is available
   const taskCheck = await Task.findOne({ user: req.user._id, title });

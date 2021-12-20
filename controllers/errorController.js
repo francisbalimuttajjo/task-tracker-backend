@@ -22,7 +22,7 @@ const handleDuplicates = (err) => {
 const expiredTokenError = () =>
   new AppError("token already expired,log in again", 401);
 //json web tokenAccount
-const jsonwebError = () => new AppError("invalid Token,please sign in", 401);
+const jsonwebError = () => new AppError("please sign in", 401);
 //validation errors
 
 const validationError = (err) => {
@@ -50,7 +50,6 @@ const productionError = (err, res) => {
       message: err.message,
     });
   } else {
-    
     return res.status(500).json({
       status: "error",
       message: "sorry,try again later",
