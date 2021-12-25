@@ -1,12 +1,14 @@
-const app = require("./app");
+const app = require("./app")
 const mongoose = require("mongoose");
 require("dotenv").config({ debug: process.env.DEBUG });
 
 console.log(app.get("env"));
 
 mongoose.connect(
-  // process.env.URL
-  process.env.DB_LOCAL,
+  //  process.env.URL
+   process.env.DB_LOCAL
+   ,
+ 
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
