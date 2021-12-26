@@ -8,11 +8,10 @@ const sendCastError = (err) => {
 
 ///handling duplicate fields
 const handleDuplicates = (err) => {
-  // console.log(err)
-  // console.log(err.name)
+ 
 
   const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
-  // console.log("value",value)
+  
 
   const message = ` ${value} already exists. Please use another value!`;
   return new AppError(message, 400);
@@ -65,7 +64,7 @@ module.exports = (err, req, res, next) => {
     developmentError(err, res);
   } else if (process.env.NODE_ENV === "production") {
     let error = err;
-    console.log("production error", error);
+   
     if (error.name === "CastError") error = sendCastError(error);
     if (error.code === 11000) error = handleDuplicates(error);
     if (error.name === "ValidationError") error = validationError(error);

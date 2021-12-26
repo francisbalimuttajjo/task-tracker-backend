@@ -47,7 +47,7 @@ app.use("/api/v1", userRouter);
 app.get("/", (req, res) => res.render("passwordReset.pug"));
 
 app.all("*", (req, res, next) => {
-  // res.send('route not found')
+  
   return next(
     new AppError(`${req.originalUrl} is not available on the server`, 404)
   );

@@ -95,12 +95,6 @@ userModel.methods.changedPasswordAfter = function(JWTTimestamp) {
   // False means NOT changed
   return false;
 };
-// userModel.methods.createVerifyAccountToken = async function () {
-//   const resetToken = crypto.randomBytes(32).toString("hex");
 
-//   this.Token = crypto.createHash("sha256").update(resetToken).digest("hex");
-
-//   return resetToken;
-// };
 const users = mongoose.model("users", userModel);
 module.exports = users;

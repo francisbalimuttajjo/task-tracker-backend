@@ -29,9 +29,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.js",
-    "prod": "NODE_ENV=production nodemon index.js"
+    "prod": "NODE_ENV=production nodemon index.js",
+    "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "author": "francis balimuttajjo mayanja",
   "license": "ISC"
- 
 }

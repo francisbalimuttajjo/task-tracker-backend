@@ -1,4 +1,4 @@
-// const path = require("path");
+
 const User = require("../model/User");
 const crypto = require("crypto");
 const multer = require("multer");
@@ -17,7 +17,7 @@ const {
 const multerStorage = multer.memoryStorage();
 //filtering out no images
 const multerFilter = (req, file, cb) => {
-  // console.log("fie", file);
+  
   if (file.mimetype.startsWith("image")) {
     cb(null, true);
   } else {
@@ -94,7 +94,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     { email: req.body.email },
     { Token, expiresIn: new Date(Date.now() + 10 * 60 * 1000) }
   );
-  /////
+  
   if (!user)
     return next(new appError("account doesnt exist,please signUp", 400));
   try {
@@ -103,7 +103,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     )}/api/v1/users/passwordReset/${activationToken}`;
 
     ///sending the emails
-    // await new Email(user, url).sendPasswordReset();
+    await new Email(user, url).sendPasswordReset();
      console.log(url);
     sendResponse("activation link sent to ur email", 200, req, res);
   } catch (err) {
@@ -151,14 +151,14 @@ exports.register = catchAsync(async (req, res, next) => {
       )}/api/v1/users/activate-account/${activationToken}`;
      console.log(url);
 
-    // await new Email(newUser, url).sendWelcome();
+    await new Email(newUser, url).sendWelcome();
   } catch (err) {
     await User.findOneAndDelete({ email });
     return next(new appError("oops,something is not right,try again", 400));
   }
 
   sendResponse('Account created', 200, req, res);
-  // sendResponse(newUser, 200, req, res);
+ 
 });
 exports.confirmAccount = catchAsync(async (req, res, next) => {
   const Token = createToken(req.params.token);
@@ -174,4 +174,3 @@ exports.confirmAccount = catchAsync(async (req, res, next) => {
   //sending response to the client //
   sendResponse("account activated", 200, req, res);
 });
-// http://localhost:3000/api/v1/users/activate-account/20034a87afec1a071a92f795353ed6ab5ef5999a7af11b9b7330d1135fa169bd

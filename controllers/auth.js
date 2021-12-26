@@ -6,11 +6,11 @@ const { signToken, cookieOptions, sendResponse } = require("../utils/fns");
 
 exports.isAllowed = catchAsync(async (req, res, next) => {
   let token;
-  //  console.log(req.headers.cookie); bnn
+
   //checking if token exists on the response headers
   if (req.headers.cookie && req.headers.cookie.startsWith("auth")) {
     token = req.headers.cookie.split("=")[1];
-    // console.log('token',token);
+   
   } else if (!req.headers.cookie || !req.headers.cookie.startsWith("auth")) {
     return next(
       new appError("You are not logged in! Please log in to get access.", 401)
@@ -20,7 +20,7 @@ exports.isAllowed = catchAsync(async (req, res, next) => {
   //verifying if the right token
   const verify = jwt.verify(token, process.env.JWT_SECRET);
   const user = await User.findById(verify.id);
-  // console.log(user);
+  
 
   //getting the user for that token
   if (!user) return next(new appError("user doesnt exist", 400));
@@ -37,13 +37,13 @@ exports.isAllowed = catchAsync(async (req, res, next) => {
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.user._id).select('+password');
-  console.log(user)
+ 
   const { currentPassword, password, passwordConfirm } = req.body;
   if (!currentPassword || !password || !passwordConfirm)
     return next(new appError("please fill all fields",400));
 
       const verify = await user.correctPassword(currentPassword, user.password);
-  // console.log(verify);
+ 
   if (!verify)
     return next(new appError("please,provide a valid password ", 400));
     (user.passwordChangedAt = Date.now()),
@@ -62,9 +62,9 @@ exports.login = catchAsync(async (req, res, next) => {
  
   if (!user) return next(new appError("user doesnt exist,please signUp", 400));
 
-  // console.log(user);
+
   const verify = await user.correctPassword(password, user.password);
-  // console.log(verify);
+
   if (!verify)
     return next(new appError("please,provide valid credentials ", 400));
 
@@ -91,7 +91,7 @@ exports.login = catchAsync(async (req, res, next) => {
 
 
 exports.logOutHandler = catchAsync(async (req, res, next) => {
-  // console.log('cooke',req.headers.cookie)
+ 
   res.cookie("auth", "ooops loggedOut", { expiresIn: 2000 });
   sendResponse("logged out successfully", 200, req, res);
 });
@@ -101,7 +101,7 @@ exports.isAuthenticated = catchAsync(async (req, res, next) => {
   //checking if token exists on the response headers
   if (req.headers.cookie && req.headers.cookie.startsWith("auth")) {
     token = req.headers.cookie.split("=")[1];
-    // console.log('token',token);
+    
   } else if (!req.headers.cookie || !req.headers.cookie.startsWith("auth")) {
     return next(
       new appError("You are not logged in! Please log in to get access.", 401)
@@ -111,7 +111,7 @@ exports.isAuthenticated = catchAsync(async (req, res, next) => {
   //verifying if the right token
   const verify = jwt.verify(token, process.env.JWT_SECRET);
   const user = await User.findById(verify.id);
-  // console.log(user);
+ 
 
   //getting the user for that token
   if (!user) return next(new appError("user doesnt exist", 400));
