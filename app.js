@@ -14,12 +14,13 @@ const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
 
 const app = express();
-
+app.use(express.static(path.resolve(__dirname,'./client/build')))
 app.use(express.json());
 app.use(
   cors({
     credentials: true,
-    origin: "http://localhost:3000",
+    // origin: "http://localhost:3000",
+    origin: "https://task-traacker.herokuapp.com",
   })
 );
 app.use(mongoSanitize());
