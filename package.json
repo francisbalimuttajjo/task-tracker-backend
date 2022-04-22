@@ -19,18 +19,17 @@
     "mongoose": "^6.0.14",
     "morgan": "^1.10.0",
     "multer": "^1.4.4",
-    "nodemailer": "^6.7.0",
-    "nodemon": "^2.0.15",
+    "nodemailer": "^6.7.0",    
     "pug": "^3.0.2",
     "sharp": "^0.29.3",
     "validator": "^13.7.0"
   },
-  "devDependencies": {},
+  "devDependencies": {"nodemon": "^2.0.15"},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.js",
-    "prod": "NODE_ENV=production nodemon index.js",
-    "heroku-postbuild": "cd client && npm install && npm run build"
+    "prod": "NODE_ENV=production nodemon index.js"
+    
   },
   "author": "francis balimuttajjo mayanja",
   "license": "ISC"

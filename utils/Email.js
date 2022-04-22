@@ -11,7 +11,6 @@ module.exports = class Email {
   }
 
   newTransport() {
-    
     //   // Sendgrid
     return nodemailer.createTransport({
       service: "Gmail",
@@ -20,9 +19,6 @@ module.exports = class Email {
         pass: process.env.PASSWORD,
       },
     });
-    
-
-   
   }
 
   // Send the actual email
@@ -40,7 +36,6 @@ module.exports = class Email {
       to: this.to,
       subject,
       html,
-      //   text: htmlToText.fromString(html)
     };
 
     // 3) Create a transport and send email

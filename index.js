@@ -1,24 +1,20 @@
-const app = require("./app")
+const app = require("./app");
 const mongoose = require("mongoose");
-require("dotenv").config({ debug: process.env.DEBUG });
+
+require("dotenv").config({});
 
 console.log(app.get("env"));
 
-mongoose.connect(
-   process.env.URL
-   //process.env.DB_LOCAL
-   ,
- 
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }
-);
+mongoose.connect(process.env.URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
 const db = mongoose.connection;
 db.on("error", (err) => {
-  // console.error(err);
-  // console.error('something is wrog dat');
+  console.log(err);
 });
+
 db.once("open", () => {
   console.log("DB started successfully connected");
 });

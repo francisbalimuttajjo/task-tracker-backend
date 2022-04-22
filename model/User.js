@@ -78,7 +78,7 @@ userModel.methods.correctPassword = async function (
 ) {
   return await bcrypt.compare(candidatePassword, userPassword);
 
-  // return x;
+  
 };
 
 

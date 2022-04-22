@@ -1,11 +1,8 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
-const mongoose = require("mongoose");
-const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
-const hpp = require("hpp");
 const cors = require("cors");
 const path = require("path");
 const TaskRouter = require("./routes/Task");
@@ -14,14 +11,15 @@ const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
 
 const app = express();
-app.use(express.static(path.resolve(__dirname,'./client/build')))
 app.use(express.json());
 app.use(
-  cors({
-    credentials: true,
-    // origin: "http://localhost:3000",
-    origin: "https://task-traacker.herokuapp.com",
-  })
+  cors(
+    // {
+    // credentials: true,
+    //  origin: "http://localhost:3000",
+  
+    // }
+  )
 );
 app.use(mongoSanitize());
 app.use(cookieParser());
@@ -38,14 +36,11 @@ const limiter = rateLimit({
 });
 
 app.use("/api", limiter);
-// Development logging
-if (process.env.NODE_ENV === "development") {
-  app.use(morgan("dev"));
-}
+
 
 app.use("/api/v1", TaskRouter);
 app.use("/api/v1", userRouter);
-app.get("/", (req, res) => res.render("passwordReset.pug"));
+
 
 app.all("*", (req, res, next) => {
   
