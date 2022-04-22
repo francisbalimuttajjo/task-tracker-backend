@@ -26,7 +26,7 @@
   </tr>
   <tbody>
     <tr>
-  <td/>api/v1/users/register</td>
+  <td/>/api/v1/users/register</td>
   <td>post</td>
     </tr>
      <tr>
