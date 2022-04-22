@@ -60,7 +60,7 @@ exports.login = catchAsync(async (req, res, next) => {
 
   const user = await User.findOne({ email }).select("+password");
  
-  if (!user) return next(new appError("user doesnt exist,please signUp", 400));
+  if (!user) return next(new appError("please,provide valid credentials ", 400));
 
 
   const verify = await user.correctPassword(password, user.password);
@@ -89,39 +89,10 @@ exports.login = catchAsync(async (req, res, next) => {
 
 
 
-
 exports.logOutHandler = catchAsync(async (req, res, next) => {
  
   res.cookie("auth", "ooops loggedOut", { expiresIn: 2000 });
   sendResponse("logged out successfully", 200, req, res);
 });
-exports.isAuthenticated = catchAsync(async (req, res, next) => {
-  let token;
-  
-  //checking if token exists on the response headers
-  if (req.headers.cookie && req.headers.cookie.startsWith("auth")) {
-    token = req.headers.cookie.split("=")[1];
-    
-  } else if (!req.headers.cookie || !req.headers.cookie.startsWith("auth")) {
-    return next(
-      new appError("You are not logged in! Please log in to get access.", 401)
-    );
-  }
 
-  //verifying if the right token
-  const verify = jwt.verify(token, process.env.JWT_SECRET);
-  const user = await User.findById(verify.id);
- 
-
-  //getting the user for that token
-  if (!user) return next(new appError("user doesnt exist", 400));
-  if (user.changedPasswordAfter(verify.iat)) {
-    return next(
-      new appError("User recently changed password! Please log in again.", 401)
-    );
-  }
-  if (!user.active) return next(new appError("account deleted", 401));
-  
-  sendResponse(user, 200, req, res);
-});
   
