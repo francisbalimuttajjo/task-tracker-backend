@@ -28,62 +28,62 @@
   <tbody>
     <tr>
   <td/>/api/v1/users/register</td>
-  <td>post</td>
+  <td>POST</td>
   <td>Registering first time users</td>
     </tr>
      <tr>
   <td>/api/v1/users/login</td>
-    <td>post</td>
+    <td>POST</td>
   <td>Logging into account</td>
     </tr>
      <tr>
   <td>/api/v1/users/forgotPassword</td>
-  <td>post</td>
+  <td>POST</td>
   <td>Getting password reset token</td>
     </tr>
      <tr>
   <td>/api/v1/users/logout</td>
-  <td>get</td>
+  <td>GET</td>
   <td>Logging out of account</td>
     </tr>
      <tr>
   <td>/api/v1/users/changePassword</td>
-  <td>post</td>
+  <td>POST</td>
   <td>Changing password</td>
     </tr>
        <tr>
   <td>/api/v1/users/passwordReset/:token</td>
-  <td>post</td>
+  <td>POST</td>
   <td>Resetting password</td>
     </tr>
          <tr>
   <td>/api/v1/users/activate-account/:token</td>
-  <td>get</td>
+  <td>GET</td>
   <td>Activating account</td>
     </tr>
              <tr>
   <td>/api/v1/tasks</td>
-  <td>get</td>
+  <td>GET</td>
   <td>Getting all tasks in database</td>
     </tr>
                <tr>
   <td>/api/v1/tasks</td>
-  <td>post</td>
+  <td>POST</td>
   <td>Adding tasks to database</td>
     </tr>
                <tr>
   <td>/api/v1/tasks/:id</td>
-  <td>delete</td>
+  <td>DELETE</td>
   <td>Deleting tasks</td>
     </tr>
                 <tr>
   <td>/api/v1/tasks/:id</td>
-  <td>patch</td>
+  <td>PATCH</td>
   <td>Editing tasks</td>
     </tr>
                 <tr>
   <td>/api/v1/tasks/myTasks</td>
-  <td>get</td>
+  <td>GET</td>
   <td>Getting tasks for specif user</td>
     </tr>
 </tbody>
