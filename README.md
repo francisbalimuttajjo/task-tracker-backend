@@ -23,55 +23,68 @@
   <tr>
     <td><strong>Endpoint</strong></td>
     <td><strong>Method</strong></td>
+        <td><strong>Role</strong></td>
   </tr>
   <tbody>
     <tr>
   <td/>/api/v1/users/register</td>
   <td>post</td>
+  <td>Registering first time users</td>
     </tr>
      <tr>
   <td>/api/v1/users/login</td>
-  <td>post</td>
+    <td>post</td>
+  <td>Logging into account</td>
     </tr>
      <tr>
   <td>/api/v1/users/forgotPassword</td>
   <td>post</td>
+  <td>Getting password reset token</td>
     </tr>
      <tr>
   <td>/api/v1/users/logout</td>
   <td>get</td>
+  <td>Logging out of account</td>
     </tr>
      <tr>
   <td>/api/v1/users/changePassword</td>
   <td>post</td>
+  <td>Changing password</td>
     </tr>
        <tr>
   <td>/api/v1/users/passwordReset/:token</td>
   <td>post</td>
+  <td>Resetting password</td>
     </tr>
          <tr>
   <td>/api/v1/users/activate-account/:token</td>
   <td>get</td>
+  <td>Activating account</td>
     </tr>
              <tr>
   <td>/api/v1/tasks</td>
   <td>get</td>
+  <td>Getting all tasks in database</td>
     </tr>
                <tr>
   <td>/api/v1/tasks</td>
   <td>post</td>
+  <td>Adding tasks to database</td>
     </tr>
                <tr>
   <td>/api/v1/tasks/:id</td>
   <td>delete</td>
+  <td>Deleting tasks</td>
     </tr>
                 <tr>
   <td>/api/v1/tasks/:id</td>
   <td>patch</td>
+  <td>Editing tasks</td>
     </tr>
                 <tr>
   <td>/api/v1/tasks/myTasks</td>
   <td>get</td>
+  <td>Getting tasks for specif user</td>
     </tr>
 </tbody>
 </table>
