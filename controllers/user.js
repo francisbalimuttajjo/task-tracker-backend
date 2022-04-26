@@ -128,7 +128,7 @@ exports.register = catchAsync(async (req, res, next) => {
   //
   const activationToken = crypto.randomBytes(32).toString("hex");
   const Token = createToken(activationToken);
-  console.log("token", Token);
+
   //
   const newUser = new User({
     //disabling white spaces as inputs
@@ -143,13 +143,9 @@ exports.register = catchAsync(async (req, res, next) => {
 
   await newUser.save();
   try {
-    const url =
-      //  `http://localhost:3000/api/v1/users/activate-account/${activationToken}`
-
-      `${req.protocol}://${req.get(
+    const url = `${req.protocol}://${req.get(
         "host"
-      )}/api/v1/users/activate-account/${activationToken}`;
-    console.log(url);
+      )}/api/v1/users/activate-account/${activationToken}`;   
 
     await new Email(newUser, url).sendWelcome();
   } catch (err) {
